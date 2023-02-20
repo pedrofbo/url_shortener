@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"crypto/sha256"
@@ -48,9 +48,6 @@ func GenerateShortUrl(longUrl string, particleTableName string) (*string, error)
 	}
 
 	value_1, value_2, value_3 := generateSampleValues(longUrl, len(*particles))
-	fmt.Println(value_1)
-	fmt.Println(value_2)
-	fmt.Println(value_3)
 	shortUrl := ((*particles)[value_1].Particle + (*particles)[value_2].Particle + (*particles)[value_3].Particle)
 	return &shortUrl, nil
 }
