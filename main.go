@@ -23,7 +23,7 @@ func main() {
 
 func redirect(c *gin.Context) {
 	var shortUrl string = c.Param("shortUrl")
-	result, err := getLongUrl("url_shortener__entries", shortUrl)
+	result, err := GetLongUrl("url_shortener__entries", shortUrl)
 	if err != nil {
 		Error.Println(err)
 		c.Redirect(http.StatusFound, "https://fun.pyoh.dev/")
@@ -42,7 +42,7 @@ func createShortUrl(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, msg)
 		return
 	}
-	shortUrl, err := generateShortUrl(requestBody.Url, "url_shortener__particles")
+	shortUrl, err := GenerateShortUrl(requestBody.Url, "url_shortener__particles")
 	if err != nil {
 		Error.Println(err)
 		c.JSON(http.StatusBadRequest, fmt.Sprintf("{\"error\":\"%s\"}", err))

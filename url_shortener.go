@@ -21,7 +21,7 @@ type ParticleEntry struct {
 	Particle string `json:"particle" dynamodbav:"particle"`
 }
 
-func getLongUrl(tableName string, shortUrl string) (*Item, error) {
+func GetLongUrl(tableName string, shortUrl string) (*Item, error) {
 	input := map[string]types.AttributeValue{
 		"short_url": &types.AttributeValueMemberS{Value: shortUrl},
 	}
@@ -36,6 +36,23 @@ func getLongUrl(tableName string, shortUrl string) (*Item, error) {
 	}
 
 	return item, nil
+}
+
+func GenerateShortUrl(longUrl string, particleTableName string) (*string, error) {
+	particles, err := getAllParticles(particleTableName)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to fetch particles from table %s", particleTableName)
+	}
+	if particles == nil {
+		return nil, fmt.Errorf("No particles found on table %s", particleTableName)
+	}
+
+	value_1, value_2, value_3 := generateSampleValues(longUrl, len(*particles))
+	fmt.Println(value_1)
+	fmt.Println(value_2)
+	fmt.Println(value_3)
+	shortUrl := ((*particles)[value_1].Particle + (*particles)[value_2].Particle + (*particles)[value_3].Particle)
+	return &shortUrl, nil
 }
 
 func getAllUrls(tableName string) (*[]Item, error) {
@@ -64,23 +81,6 @@ func getAllParticles(tableName string) (*[]ParticleEntry, error) {
 	}
 
 	return items, nil
-}
-
-func generateShortUrl(longUrl string, particleTableName string) (*string, error) {
-	particles, err := getAllParticles(particleTableName)
-	if err != nil {
-		return nil, fmt.Errorf("Failed to fetch particles from table %s", particleTableName)
-	}
-	if particles == nil {
-		return nil, fmt.Errorf("No particles found on table %s", particleTableName)
-	}
-
-	value_1, value_2, value_3 := generateSampleValues(longUrl, len(*particles))
-	fmt.Println(value_1)
-	fmt.Println(value_2)
-	fmt.Println(value_3)
-	shortUrl := ((*particles)[value_1].Particle + (*particles)[value_2].Particle + (*particles)[value_3].Particle)
-	return &shortUrl, nil
 }
 
 func generateSampleValues(input string, maxValue int) (int, int, int) {
