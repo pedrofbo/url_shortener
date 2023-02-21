@@ -9,7 +9,7 @@ data "archive_file" "lambda_zip" {
 }
 
 resource "aws_lambda_function" "shorten" {
-  function_name = "url_shortener__shorten"
+  function_name = "url_shortener__shorten${var.env_suffix}"
   filename      = data.archive_file.lambda_zip.output_path
   role          = aws_iam_role.lambda.arn
   handler       = "url_shortener"
@@ -30,7 +30,7 @@ resource "aws_lambda_function" "shorten" {
 }
 
 resource "aws_lambda_function" "redirect" {
-  function_name = "url_shortener__redirect"
+  function_name = "url_shortener__redirect${var.env_suffix}"
   filename      = data.archive_file.lambda_zip.output_path
   role          = aws_iam_role.lambda.arn
   handler       = "url_shortener"

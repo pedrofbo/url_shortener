@@ -1,5 +1,5 @@
 resource "aws_api_gateway_rest_api" "url_shortener" {
-  name = "url_shortener"
+  name = "url_shortener${var.env_suffix}"
 
   endpoint_configuration {
     types = [
@@ -39,7 +39,7 @@ resource "aws_lambda_permission" "api_gateway_invoke_lambda__shorten" {
   function_name = aws_lambda_function.shorten.arn
   action        = "lambda:InvokeFunction"
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${local.account_id}:${aws_api_gateway_rest_api.url_shortener.id}/*/${aws_api_gateway_method.create__post.http_method}${aws_api_gateway_resource.create.path}"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${aws_api_gateway_rest_api.url_shortener.id}/*/${aws_api_gateway_method.create__post.http_method}${aws_api_gateway_resource.create.path}"
 }
 
 ###########################
@@ -55,9 +55,9 @@ resource "aws_api_gateway_resource" "redirect" {
 resource "aws_api_gateway_method" "redirect__get" {
   rest_api_id   = aws_api_gateway_rest_api.url_shortener.id
   resource_id   = aws_api_gateway_resource.redirect.id
-  http_method          = "GET"
-  authorization        = "NONE"
-  request_parameters   = {
+  http_method   = "GET"
+  authorization = "NONE"
+  request_parameters = {
     "method.request.path.short_url" = true
   }
 }
@@ -76,5 +76,5 @@ resource "aws_lambda_permission" "api_gateway_invoke_lambda__redirect" {
   function_name = aws_lambda_function.redirect.arn
   action        = "lambda:InvokeFunction"
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${local.account_id}:${aws_api_gateway_rest_api.url_shortener.id}/*/${aws_api_gateway_method.redirect__get.http_method}/*"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${aws_api_gateway_rest_api.url_shortener.id}/*/${aws_api_gateway_method.redirect__get.http_method}/*"
 }

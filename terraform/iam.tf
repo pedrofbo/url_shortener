@@ -1,5 +1,5 @@
 resource "aws_iam_role" "lambda" {
-  name = "UrlShortenerLambdaRole"
+  name = "UrlShortenerLambdaRole${var.env_suffix}"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
@@ -16,7 +16,7 @@ resource "aws_iam_role" "lambda" {
 }
 
 resource "aws_iam_role_policy" "url_shortener_lambda_permissions" {
-  name   = "url_shortener-lambda-permissions"
+  name   = "url_shortener-lambda-permissions${var.env_suffix}"
   role   = aws_iam_role.lambda.name
   policy = data.aws_iam_policy_document.url_shortener_lambda_permissions.json
 }
