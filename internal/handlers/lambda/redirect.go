@@ -28,7 +28,12 @@ func redirectHandler(request events.APIGatewayProxyRequest) (events.APIGatewayPr
 	result, err := internal.GetLongUrl(config.EntriesTableName, shortUrl)
 	if err != nil {
 		internal.Error.Println(err)
-		return events.APIGatewayProxyResponse{}, err
+		return events.APIGatewayProxyResponse{
+			StatusCode: http.StatusPermanentRedirect,
+			Headers: map[string]string{
+				"location": config.DefaultRedirectEndpoint,
+			},
+		}, nil
 	}
 
 	return events.APIGatewayProxyResponse{
