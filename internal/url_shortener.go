@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"math/rand"
+	"net/url"
+	"path"
 
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
@@ -90,4 +92,13 @@ func getSeedFromString(input string) int64 {
 	h := sha256.New()
 	io.WriteString(h, input)
 	return int64(binary.BigEndian.Uint64(h.Sum(nil)))
+}
+
+func JoinUrl(baseUrl string, endpoint string) (string, error) {
+	url, err := url.Parse(baseUrl)
+	if err != nil {
+		return "", nil
+	}
+	url.Path = path.Join(url.Path, endpoint)
+	return url.String(), nil
 }

@@ -3,7 +3,6 @@ package gin
 import (
 	"fmt"
 	"net/http"
-	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 	"github.com/pedrofbo/url_shortener/dynamodb"
@@ -67,8 +66,14 @@ func createShortUrl(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, fmt.Sprintf("{\"error\":\"%s\"}", err))
 		return
 	}
+	redirectUrl, err := internal.JoinUrl(config.BaseEndpoint, *shortUrl)
+	if err != nil {
+		internal.Error.Println(err)
+		c.JSON(http.StatusBadRequest, fmt.Sprintf("{\"error\":\"%s\"}", err))
+		return
+	}
 	response := internal.Item{
-		ShortUrl: filepath.Join(config.BaseEndpoint, *shortUrl),
+		ShortUrl: redirectUrl,
 		LongUrl:  requestBody.Url,
 	}
 	c.IndentedJSON(http.StatusCreated, response)

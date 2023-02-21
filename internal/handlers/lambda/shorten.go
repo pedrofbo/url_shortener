@@ -3,7 +3,6 @@ package lambda
 import (
 	"encoding/json"
 	"net/http"
-	"path/filepath"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -44,8 +43,14 @@ func shortenHandler(request events.APIGatewayProxyRequest) (events.APIGatewayPro
 		internal.Error.Println(err)
 		return events.APIGatewayProxyResponse{}, err
 	}
+
+	redirectUrl, err := internal.JoinUrl(config.BaseEndpoint, *shortUrl)
+	if err != nil {
+		internal.Error.Println(err)
+		return events.APIGatewayProxyResponse{}, err
+	}
 	response := internal.Item{
-		ShortUrl: filepath.Join(config.BaseEndpoint, *shortUrl),
+		ShortUrl: redirectUrl,
 		LongUrl:  requestBody.Url,
 	}
 	responseBody, err := json.Marshal(response)
