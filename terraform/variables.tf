@@ -27,3 +27,9 @@ variable "default_redirect_endpoint" {
   description = "Default endpoint where the user will be redirected if a given shortened URL is not found in the database."
   default     = "https://fun.pyoh.dev"
 }
+
+data "aws_caller_identity" "current" {}
+locals {
+  account_id   = data.aws_caller_identity.current.account_id
+  env_suffix   = terraform.workspace == "default" ? "" : "-${terraform.workspace}"
+}
