@@ -22,7 +22,7 @@ resource "aws_lambda_function" "shorten" {
   environment {
     variables = {
       "API_HANDLER"          = "LAMBDA_SHORTEN"
-      "BASE_ENDPOINT"        = var.redirect_endpoint
+      "BASE_ENDPOINT"        = var.base_endpoint
       "ENTRIES_TABLE_NAME"   = aws_dynamodb_table.entries.name
       "PARTICLES_TABLE_NAME" = aws_dynamodb_table.particles.name
     }
@@ -42,9 +42,10 @@ resource "aws_lambda_function" "redirect" {
 
   environment {
     variables = {
-      "API_HANDLER"          = "LAMBDA_REDIRECT"
-      "ENTRIES_TABLE_NAME"   = aws_dynamodb_table.entries.name
-      "PARTICLES_TABLE_NAME" = aws_dynamodb_table.particles.name
+      "API_HANDLER"               = "LAMBDA_REDIRECT"
+      "DEFAULT_REDIRECT_ENDPOINT" = var.default_redirect_endpoint
+      "ENTRIES_TABLE_NAME"        = aws_dynamodb_table.entries.name
+      "PARTICLES_TABLE_NAME"      = aws_dynamodb_table.particles.name
     }
   }
 }
